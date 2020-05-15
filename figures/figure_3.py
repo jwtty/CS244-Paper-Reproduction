@@ -1,17 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 def lcm(x, y):  
-    if x > y:  
-        greater = x  
-    else:  
-        greater = y  
-    while(True):  
-        if((greater % x == 0) and (greater % y == 0)):
-            lcm = greater  
-            break  
-        greater += 1  
-    return lcm  
+    return abs(x * y) // math.gcd(x, y)
 
 def BFUsage(profiles):
     bottleneck_src = 0 if sum([profile[0] for profile in profiles]) > sum([profile[1] for profile in profiles]) else 1
