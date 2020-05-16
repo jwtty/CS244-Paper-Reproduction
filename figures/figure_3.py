@@ -13,8 +13,9 @@ def BFUsage(profiles):
         lcm_src = lcm(lcm_src, profile[bottleneck_src])
 
     for profile in profiles:
+        times = lcm_src / profile[bottleneck_src]
         for i in range(2):
-            profile[i] = profile[i] * lcm_src / profile[bottleneck_src]
+            profile[i] = profile[i] * times
     
     sum_1 = sum([profile[0] for profile in profiles])
     sum_2 = sum([profile[1] for profile in profiles])
