@@ -15,6 +15,8 @@ print('<1, 2>:\t', pf2[1][1], '\t\t\t', pf2[1][2])
 
 #---------------------------------------------------------------
 # Plotting Figure 12
+# generate the 10 flows
+flows = [PF.Flow((20, 1), startTime = 15000, endTime = 85000)]
 pf = PF.PFSimulator([PF.Flow((0.1, 1), startTime = 15000, endTime = 85000), \
     PF.Flow((1, 1), startTime = 0, endTime = 100000)], maxTime = 100000)
 _fig, axs = plt.subplots(3, 1)

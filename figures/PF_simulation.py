@@ -11,7 +11,7 @@ class Flow:
         return time >= self.startTime and time <= self.endTime
 
 def sample(packetsProcessed, flows, time):
-    total = [[0, 0]] * len(flows)
+    total = [[0, 0] for i in range(len(flows))]
     maxResource = [0, 0]
     for i in range(len(flows)):
         total[i] = [total[i][j] + packetsProcessed[i] * flows[i].profile[j] for j in range(2)]
