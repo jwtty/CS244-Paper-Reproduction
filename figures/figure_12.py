@@ -20,6 +20,7 @@ flows = [FQ.Flow((20, 1), startTime = 0, endTime = 25000)]
 flows += [FQ.Flow((20, 11), startTime = 25000, endTime = 50000)]
 flows += [FQ.Flow((10, 11), startTime = 0, endTime = 50000) for i in range(9)]
 # print(flows)
+drf = FQ.DRFSimulator(flows, maxTime = 50000, sampleSize = 800)
 pf = FQ.PFSimulator(flows, maxTime = 50000, sampleSize = 800, bufferThreshold = 2)
 _fig, axs = plt.subplots(2, 1)
 
@@ -30,21 +31,29 @@ label = ['Flow 1 <20, 1>', 'Flow 2-10 <10, 11>']
 # dominant resource 
 dom1 = [max(pf[t][0][1]+pf[t][1][1], pf[t][0][2]+pf[t][1][2]) for t in range(len(pf))] 
 axs[1].plot(time, dom1, jobStyle[0], label=label[0])
+dom0 = [max(drf[t][0][1]+drf[t][1][1], drf[t][0][2]+drf[t][1][2]) for t in range(len(drf))] 
+axs[0].plot(time, dom0, jobStyle[0], label=label[0])
 for i in range(2, 11):
-    domRest = [max(pf[t][i][1], pf[t][i][2]) for t in range(len(pf))]
+    domRest0 = [max(drf[t][i][1], drf[t][i][2]) for t in range(len(drf))]
+    domRest1 = [max(pf[t][i][1], pf[t][i][2]) for t in range(len(pf))]
     if i == 2:
-        axs[1].plot(time, domRest, jobStyle[1], label=label[1])
-    else: axs[1].plot(time, domRest, jobStyle[1])
+        axs[0].plot(time, domRest0, jobStyle[1], label=label[1])
+        axs[1].plot(time, domRest1, jobStyle[1], label=label[1])
+    else: 
+        axs[0].plot(time, domRest0, jobStyle[1])
+        axs[1].plot(time, domRest1, jobStyle[1])
 
 # setting axis labels
 axs[0].set(xlabel='Time', ylabel='Dom. Share (DRFQ)')
 axs[1].set(xlabel='Time', ylabel='Dom. Share (PF)')
-axs[1].legend(loc = 'upper left')
+axs[0].legend(loc = 'upper left')
 for i in range(2):
     axs[i].grid(ls=':', color='black')
     axs[i].set_xlim([0, 50000])
     axs[i].set_ylim([0, 0.5])
+    axs[i].axvline(x=25000, color='black')
     axs[i].label_outer()
+    axs[i].text(25500, 0.25, 'Flow 1 switches to <20, 11>')
 plt.savefig('figure_12.png')
-plt.show()
+# plt.show()
 
