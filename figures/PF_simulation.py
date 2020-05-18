@@ -71,7 +71,7 @@ def PFSimulator(flows, maxTime = 15000, timeStep = 0.1, bufferThreshold = 1, \
         # measure the share of a sample 
         if time > 0 and time % sampleTime == 0:
             samples.append(sample(packetsProcessed, flows, time))
-        if time > 0 and time % sampleSize == 0:
+        if time % sampleTime < sampleTime - sampleSize:
             packetsProcessed = [0 for i in range(len(flows))]
 
         # counting active flows for resource 1

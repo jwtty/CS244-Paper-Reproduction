@@ -16,28 +16,32 @@ print('<1, 2>:\t', pf2[1][1], '\t\t\t', pf2[1][2])
 #---------------------------------------------------------------
 # Plotting Figure 12
 # generate the 10 flows
-flows = [PF.Flow((20, 1), startTime = 15000, endTime = 85000)]
-pf = PF.PFSimulator([PF.Flow((0.1, 1), startTime = 15000, endTime = 85000), \
-    PF.Flow((1, 1), startTime = 0, endTime = 100000)], maxTime = 100000)
-_fig, axs = plt.subplots(3, 1)
+flows = [PF.Flow((20, 1), startTime = 0, endTime = 25000)]
+flows += [PF.Flow((20, 11), startTime = 25000, endTime = 50000)]
+flows += [PF.Flow((10, 11), startTime = 0, endTime = 50000) for i in range(9)]
+# print(flows)
+pf = PF.PFSimulator(flows, maxTime = 50000, sampleSize = 800, bufferThreshold = 2)
+_fig, axs = plt.subplots(2, 1)
 
+# pf[time][flow][resource]
 time = [pf[t][0][0] for t in range(len(pf))]
-jobStyle = ['go-', 'bD-']
-label = ['Flow 1 <0.1, 1>', 'Flow 2 <1, 1>']
-for i in range(2): # for each flow
-    rsc1 = [pf[t][i][1] for t in range(len(pf))] # resource 1
-    rsc2 = [pf[t][i][2] for t in range(len(pf))] # resource 2
-    dom = [max(pf[t][i][1], pf[t][i][2]) for t in range(len(pf))] # dominant resource 
-    axs[2].plot(time, rsc1, jobStyle[i])
-    axs[1].plot(time, rsc2, jobStyle[i])
-    axs[0].plot(time, dom, jobStyle[i], label=label[i])
+jobStyle = ['rs-', 'go-']
+label = ['Flow 1 <20, 1>', 'Flow 2-10 <10, 11>']
+# dominant resource 
+dom1 = [max(pf[t][0][1]+pf[t][1][1], pf[t][0][2]+pf[t][1][2]) for t in range(len(pf))] 
+axs[1].plot(time, dom1, jobStyle[0], label=label[0])
+for i in range(2, 11):
+    domRest = [max(pf[t][i][1], pf[t][i][2]) for t in range(len(pf))]
+    if i == 2:
+        axs[1].plot(time, domRest, jobStyle[1], label=label[1])
+    else: axs[1].plot(time, domRest, jobStyle[1])
 
 # setting axis labels
-axs[2].set(xlabel='Time', ylabel='Res. 1 Share')
-axs[1].set(xlabel='Time', ylabel='Res. 2 Share')
-axs[0].set(xlabel='Time', ylabel='Dom. Share')
-axs[0].legend(loc = 'center right')
 
-plt.savefig('figure_11.png')
+axs[1].set(xlabel='Time', ylabel='Dom. Share')
+axs[1].set_ylim([0, 0.5])
+axs[1].legend(loc = 'upper left')
+
+plt.savefig('figure_12.png')
 plt.show()
 
