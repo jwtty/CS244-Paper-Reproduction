@@ -1,13 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import figure_11 as util
-
-
+import PF_simulation as PF
 
 #---------------------------------------------------------------
-# Plotting Figure 11
-pf = util.SFSimulator([Flow((0.1, 1), startTime = 15000, endTime = 85000), \
-    Flow((1, 1), startTime = 0, endTime = 100000)], maxTime = 100000)
+# Confirming resource shares in 4.2
+pf1 = PF.PFSimulator([PF.Flow((4, 1)), PF.Flow((1, 2))], maxTime = 2001)[0]
+pf2 = PF.PFSimulator([PF.Flow((4, 2)), PF.Flow((1, 2))], maxTime = 2001)[0]
+
+print('Profile\t Resource 1 \t\t Resource 2')
+print('<4, 1>:\t', pf1[0][1], '\t', pf1[0][2])
+print('<1, 2>:\t', pf1[1][1], '\t', pf1[1][2], '\n')
+print('<4, 2>:\t', pf2[0][1], '\t\t\t', pf2[0][2])
+print('<1, 2>:\t', pf2[1][1], '\t\t\t', pf2[1][2])
+
+#---------------------------------------------------------------
+# Plotting Figure 12
+pf = PF.PFSimulator([PF.Flow((0.1, 1), startTime = 15000, endTime = 85000), \
+    PF.Flow((1, 1), startTime = 0, endTime = 100000)], maxTime = 100000)
 _fig, axs = plt.subplots(3, 1)
 
 time = [pf[t][0][0] for t in range(len(pf))]
