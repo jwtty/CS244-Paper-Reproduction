@@ -1,70 +1,32 @@
 import numpy as np
-
-def SFQScheduler(flows):
-    """
-    Takes in a list of Flow
-    """
-    return
-
-class Flow:
-    def __init__(self, profile, startTime = 0, endTime = 2000):
-        self.profile = profile
-        self.startTime = startTime
-        self.endTime = endTime
-        return 
-    def active(self, time):
-        return time >= self.startTime and time <= self.endTime
+import matplotlib.pyplot as plt
+import figure_11 as util
 
 
-def PFScheduler(flows, maxTime = 2000, timeStep = 0.1, bufferThreshold = 1): # For two resources
-    """
-    Takes in a list of Flow
-    """
-    packetsProcessed = [0 for i in range(len(flows))]
-    packetInProcess1 = [0 for i in range(len(flows))]
-    packetInProcess2 = [0 for i in range(len(flows))]
-    buffer = [0 for i in range(len(flows))]
-    for t in range(round(maxTime/timeStep)):
-        time = t * timeStep
-        # counting active flows for resource 1
-        activeFlowNum = 0
-        for i in range(len(flows)): # a flow is only competing for resource 1 if the buffer for rsc 2 is not full
-            if flows[i].active(time) and buffer[i] < bufferThreshold: activeFlowNum += 1
-        for i in range(len(flows)):
-            if flows[i].active(time) and buffer[i] < bufferThreshold:
-                if packetInProcess1[i] <= 0:
-                    packetInProcess1[i] = flows[i].profile[0]
-                packetInProcess1[i] -= timeStep/activeFlowNum
-                if packetInProcess1[i] <= 0: # finish processing a packet for rsc 1
-                    buffer[i] += 1
 
-        # counting active flows for resource 2
-        activeFlowNum = 0
-        for i in range(len(flows)):
-            if packetInProcess2[i] > 0 or buffer[i] > 0:
-                activeFlowNum += 1
-        for i in range(len(flows)):
-            if packetInProcess2[i] <= 0 and buffer[i] > 0:
-                packetInProcess2[i] = flows[i].profile[1]
-                buffer[i] -= 1
-            if packetInProcess2[i] > 0:
-                packetInProcess2[i] -= timeStep/activeFlowNum
-                if packetInProcess2[i] <= 0: # finish processing a packet
-                    packetsProcessed[i] += 1
-        #print('buffer:', buffer)
-        #print('packets processed:', packetsProcessed)
-        #print('packetInProcess2', packetInProcess2)
+#---------------------------------------------------------------
+# Plotting Figure 11
+pf = util.SFSimulator([Flow((0.1, 1), startTime = 15000, endTime = 85000), \
+    Flow((1, 1), startTime = 0, endTime = 100000)], maxTime = 100000)
+_fig, axs = plt.subplots(3, 1)
 
-    total = [[0, 0]] * len(flows)
-    maxResource = [0, 0]
-    for i in range(len(flows)):
-        total[i] = [total[i][j] + packetsProcessed[i] * flows[i].profile[j] for j in range(2)]
-        maxResource = [maxResource[j] + packetsProcessed[i] * flows[i].profile[j] for j in range(2)]
-    maxResource = max(maxResource)
-    share = [[total[i][j] / maxResource for j in range(2)] for i in range(len(flows))]
-    print(share)
-    return packetsProcessed
+time = [pf[t][0][0] for t in range(len(pf))]
+jobStyle = ['go-', 'bD-']
+label = ['Flow 1 <0.1, 1>', 'Flow 2 <1, 1>']
+for i in range(2): # for each flow
+    rsc1 = [pf[t][i][1] for t in range(len(pf))] # resource 1
+    rsc2 = [pf[t][i][2] for t in range(len(pf))] # resource 2
+    dom = [max(pf[t][i][1], pf[t][i][2]) for t in range(len(pf))] # dominant resource 
+    axs[2].plot(time, rsc1, jobStyle[i])
+    axs[1].plot(time, rsc2, jobStyle[i])
+    axs[0].plot(time, dom, jobStyle[i], label=label[i])
 
+# setting axis labels
+axs[2].set(xlabel='Time', ylabel='Res. 1 Share')
+axs[1].set(xlabel='Time', ylabel='Res. 2 Share')
+axs[0].set(xlabel='Time', ylabel='Dom. Share')
+axs[0].legend(loc = 'center right')
 
-PFScheduler([Flow((4, 1)), Flow((1, 2))])
-PFScheduler([Flow((4, 2)), Flow((1, 2))])
+plt.savefig('figure_11.png')
+plt.show()
+
