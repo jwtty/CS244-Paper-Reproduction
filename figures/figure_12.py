@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import PF_simulation as PF
+import FQ_simulation as FQ
 
 #---------------------------------------------------------------
 # Confirming resource shares in 4.2
-pf1 = PF.PFSimulator([PF.Flow((4, 1)), PF.Flow((1, 2))], maxTime = 2001)[0]
-pf2 = PF.PFSimulator([PF.Flow((4, 2)), PF.Flow((1, 2))], maxTime = 2001)[0]
+pf1 = FQ.PFSimulator([FQ.Flow((4, 1)), FQ.Flow((1, 2))], maxTime = 2001)[0]
+pf2 = FQ.PFSimulator([FQ.Flow((4, 2)), FQ.Flow((1, 2))], maxTime = 2001)[0]
 
 print('Profile\t Resource 1 \t\t Resource 2')
 print('<4, 1>:\t', pf1[0][1], '\t', pf1[0][2])
@@ -16,11 +16,11 @@ print('<1, 2>:\t', pf2[1][1], '\t\t\t', pf2[1][2])
 #---------------------------------------------------------------
 # Plotting Figure 12
 # generate the 10 flows
-flows = [PF.Flow((20, 1), startTime = 0, endTime = 25000)]
-flows += [PF.Flow((20, 11), startTime = 25000, endTime = 50000)]
-flows += [PF.Flow((10, 11), startTime = 0, endTime = 50000) for i in range(9)]
+flows = [FQ.Flow((20, 1), startTime = 0, endTime = 25000)]
+flows += [FQ.Flow((20, 11), startTime = 25000, endTime = 50000)]
+flows += [FQ.Flow((10, 11), startTime = 0, endTime = 50000) for i in range(9)]
 # print(flows)
-pf = PF.PFSimulator(flows, maxTime = 50000, sampleSize = 800, bufferThreshold = 2)
+pf = FQ.PFSimulator(flows, maxTime = 50000, sampleSize = 800, bufferThreshold = 2)
 _fig, axs = plt.subplots(2, 1)
 
 # pf[time][flow][resource]
@@ -37,11 +37,14 @@ for i in range(2, 11):
     else: axs[1].plot(time, domRest, jobStyle[1])
 
 # setting axis labels
-
-axs[1].set(xlabel='Time', ylabel='Dom. Share')
-axs[1].set_ylim([0, 0.5])
+axs[0].set(xlabel='Time', ylabel='Dom. Share (DRFQ)')
+axs[1].set(xlabel='Time', ylabel='Dom. Share (PF)')
 axs[1].legend(loc = 'upper left')
-
+for i in range(2):
+    axs[i].grid(ls=':', color='black')
+    axs[i].set_xlim([0, 50000])
+    axs[i].set_ylim([0, 0.5])
+    axs[i].label_outer()
 plt.savefig('figure_12.png')
 plt.show()
 
