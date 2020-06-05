@@ -2,9 +2,9 @@
 
 This repository is our final project for CS244: Advanced Topics in Networking, Spring 2020, Stanford.
 
-The paper introduced a new scheduler algorithm, Dominant Resource Fairness Queuing (DRFQ), that provides share guarantees and strategy-proofness in multi-resource scheme. We implemented various python scripts to simulate performance of different scheduling algorithms and wrote NS2 simulators to reproduce DRFQ's behavior.
-
 We have reproduced figure 3, 4, 5, 9, 11, and 12 in paper "Multi-Resource Fair Queueing for Packet Processing".
+
+The paper introduced a new scheduler algorithm, Dominant Resource Fairness Queuing (DRFQ), that provides share guarantees and strategy-proofness in multi-resource scheme. We implemented various python scripts to simulate performance of different scheduling algorithms and wrote NS2 simulators to reproduce DRFQ's behavior.
 
 ## Python simulation
 
