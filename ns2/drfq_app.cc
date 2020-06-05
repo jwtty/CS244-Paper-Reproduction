@@ -79,7 +79,7 @@ void DrfqApp::stop()
   size_t sample_size = samples_.size();
   fprintf(stdout, "Flow %d: ", flowid_);
   for (size_t i = 0; i < sample_size; ++i) {
-    fprintf(stdout, "%d ", samples_[i]);
+    fprintf(stdout, "%d,", samples_[i]);
   }
   fprintf(stdout, "\n\n");
 }
